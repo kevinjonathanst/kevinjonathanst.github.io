@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>yourname.dev — portfolio</title>
+<meta name="description" content="Portfolio and project showcase." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e14;
+    --surface: #10151d;
+    --surface-2: #161d27;
+    --border: #212a37;
+    --text: #e6e8eb;
+    --muted: #6b7785;
+    --accent: #7dd3c0;
+    --accent-2: #c792ea;
+    --accent-dim: rgba(125, 211, 192, 0.12);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  #root { min-height: 100vh; }
+  ::selection { background: var(--accent); color: #0a0e14; }
+
+  a { color: inherit; }
+
+  /* Scanline / grid background texture */
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(125,211,192,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(125,211,192,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+  /* Tab bar nav */
+  .tabbar {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(10,14,20,0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .tabbar-inner {
+    max-width: 920px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; height: 48px; gap: 2px;
+    overflow-x: auto;
+  }
+  .tabbar-dots { display:flex; gap:6px; margin-right: 16px; flex-shrink:0; }
+  .dot { width:10px; height:10px; border-radius:50%; }
+  .dot.red{background:#e0605080;} .dot.yellow{background:#e5c07b80;} .dot.green{background:#7dd3c080;}
+  .tab {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--border);
+    padding: 0 16px;
+    height: 100%;
+    display:flex; align-items:center; gap:8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+  }
+  .tab:hover { color: var(--text); background: var(--surface); }
+  .tab.active { color: var(--accent); background: var(--surface); box-shadow: inset 0 -2px 0 var(--accent); }
+  .tab .ext { color: var(--accent-2); opacity: 0.7; }
+  .tab .dirty { width:6px; height:6px; border-radius:50%; background: var(--muted); }
+
+  section { position: relative; z-index: 1; padding: 96px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    letter-spacing: 0.02em;
+  }
+  .eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--accent); opacity: 0.5; }
+
+  /* HERO */
+  .hero { padding-top: 72px; }
+  .terminal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.6);
+  }
+  .terminal-head {
+    display:flex; align-items:center; gap:8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .terminal-head .dot { width:11px; height:11px; }
+  .terminal-head .path {
+    margin-left: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .terminal-body {
+    padding: 28px 28px 32px;
+    font-family: var(--mono);
+    font-size: 15px;
+    line-height: 1.8;
+    min-height: 210px;
+  }
+  .prompt-line { color: var(--muted); }
+  .prompt-sym { color: var(--accent); }
+  .type-out { color: var(--text); }
+  .cursor {
+    display: inline-block;
+    width: 8px; height: 1.1em;
+    background: var(--accent);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .hero-name {
+    font-family: var(--mono);
+    font-weight: 800;
+    font-size: clamp(32px, 5vw, 52px);
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .hero-name .dim { color: var(--muted); font-weight: 500; }
+  .hero-role {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 56ch;
+    margin: 0 0 28px;
+    line-height: 1.6;
+  }
+  .hero-role .hl { color: var(--accent); }
+
+  .btn-row { display:flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 11px 20px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.15s, transform 0.15s, background 0.15s;
+  }
+  .btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .btn.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .btn.primary:hover { background: var(--accent); color: #0a0e14; }
+
+  /* ABOUT */
+  h2.section-title {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 20px;
+  }
+  .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; }
+  .about-text p { line-height: 1.85; color: #b6bdc6; font-size: 15.5px; margin: 0 0 16px; }
+  .stack-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .stack-list li {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 10px;
+  }
+  .stack-list li span:last-child { color: var(--accent-2); }
+
+  /* PROJECTS */
+  .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: border-color 0.2s, transform 0.2s;
+    text-decoration: none;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .file-name { font-family: var(--mono); font-weight: 700; font-size: 15.5px; color: var(--text); }
+  .ext-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .card p.desc { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.6; flex: 1; }
+  .card-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    border-top: 1px solid var(--border); padding-top: 12px;
+  }
+  .diff { display: flex; gap: 10px; }
+  .diff .plus { color: var(--accent); }
+  .diff .minus { color: #e06050; }
+  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--muted); border: 1px solid var(--border);
+    border-radius: 4px; padding: 2px 7px;
+  }
+
+  /* CONTACT */
+  .contact-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+  }
+  .contact-box .eyebrow { justify-content: center; }
+  .contact-box .eyebrow::before { display: none; }
+  .contact-title { font-family: var(--mono); font-size: 28px; font-weight: 800; margin: 0 0 14px; }
+  .contact-sub { color: var(--muted); max-width: 48ch; margin: 0 auto 28px; line-height: 1.7; }
+  .contact-links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  footer {
+    padding: 28px 0 40px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @media (max-width: 720px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .project-grid { grid-template-columns: 1fr; }
+    section { padding: 64px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+// ---------------------------------------------------------------
+// EDIT THIS DATA to customize the site — name, bio, projects, links
+// ---------------------------------------------------------------
+const PROFILE = {
+  name: "Your Name",
+  handle: "yourhandle",
+  role: "Software developer building things for the web.",
+  bio: [
+    "I'm a developer who likes turning ideas into working software. This is where I keep the projects I'm proud of — some polished, some still rough around the edges.",
+    "Replace this paragraph with a couple of lines about your background, what you're learning, or what kind of work you're looking for."
+  ],
+  stack: [
+    { label: "Languages", value: "JavaScript, Python" },
+    { label: "Frontend", value: "React, HTML/CSS" },
+    { label: "Backend", value: "Node.js" },
+    { label: "Tools", value: "Git, GitHub" },
+  ],
+  links: {
+    github: "https://github.com/yourhandle",
+    linkedin: "https://linkedin.com/in/yourhandle",
+    email: "mailto:you@example.com",
+  }
+};
+
+const PROJECTS = [
+  {
+    name: "project-one",
+    ext: ".js",
+    desc: "One-line description of what this project does and why you built it.",
+    tags: ["React", "API"],
+    stats: { plus: 214, minus: 38 },
+    url: "#",
+  },
+  {
+    name: "project-two",
+    ext: ".py",
+    desc: "One-line description of what this project does and why you built it.",
+    tags: ["Python", "CLI"],
+    stats: { plus: 156, minus: 12 },
+    url: "#",
+  },
+  {
+    name: "project-three",
+    ext: ".ts",
+    desc: "One-line description of what this project does and why you built it.",
+    tags: ["TypeScript", "Node"],
+    stats: { plus: 340, minus: 55 },
+    url: "#",
+  },
+  {
+    name: "project-four",
+    ext: ".html",
+    desc: "One-line description of what this project does and why you built it.",
+    tags: ["HTML/CSS", "Design"],
+    stats: { plus: 88, minus: 5 },
+    url: "#",
+  },
+];
+// ---------------------------------------------------------------
+
+function TabBar({ active, onSelect }) {
+  const tabs = [
+    { id: "home", label: "home", ext: ".sh" },
+    { id: "about", label: "about", ext: ".md" },
+    { id: "projects", label: "projects", ext: ".json" },
+    { id: "contact", label: "contact", ext: ".txt" },
+  ];
+  return (
+    <div className="tabbar">
+      <div className="tabbar-inner">
+        <div className="tabbar-dots">
+          <span className="dot red"></span>
+          <span className="dot yellow"></span>
+          <span className="dot green"></span>
+        </div>
+        {tabs.map(t => (
+          <button
+            key={t.id}
+            className={"tab" + (active === t.id ? " active" : "")}
+            onClick={() => onSelect(t.id)}
+          >
+            {t.label}<span className="ext">{t.ext}</span>
+            <span className="dirty" style={{ opacity: active === t.id ? 1 : 0 }}></span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TypedTerminal() {
+  const fullText = `whoami\n> ${PROFILE.name} — ${PROFILE.role}`;
+  const [shown, setShown] = useState("");
+  const idx = useRef(0);
+
+  useEffect(() => {
+    const iv = setInterval(() => {
+      idx.current += 1;
+      setShown(fullText.slice(0, idx.current));
+      if (idx.current >= fullText.length) clearInterval(iv);
+    }, 22);
+    return () => clearInterval(iv);
+  }, []);
+
+  const lines = shown.split("\n");
+  return (
+    <div className="terminal">
+      <div className="terminal-head">
+        <span className="dot red" style={{background:'#e06050'}}></span>
+        <span className="dot yellow" style={{background:'#e5c07b'}}></span>
+        <span className="dot green" style={{background:'#7dd3c0'}}></span>
+        <span className="path">~/portfolio — zsh</span>
+      </div>
+      <div className="terminal-body">
+        <div className="prompt-line"><span className="prompt-sym">➜ </span>{lines[0]}<span className="cursor"></span></div>
+        {lines[1] && <div className="type-out" style={{marginTop: 10}}>{lines[1]}</div>}
+      </div>
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <section id="home" className="hero">
+      <div className="wrap">
+        <div className="eyebrow">01 · currently building</div>
+        <h1 className="hero-name">{PROFILE.name}<span className="dim">.dev</span></h1>
+        <p className="hero-role">
+          <span className="hl">@{PROFILE.handle}</span> — {PROFILE.role} Below is a running log of things I've shipped, broken, and fixed again.
+        </p>
+        <div className="btn-row" style={{marginBottom: 32}}>
+          <a className="btn primary" href="#projects">View projects →</a>
+          <a className="btn" href={PROFILE.links.github} target="_blank" rel="noreferrer">GitHub</a>
+          <a className="btn" href={PROFILE.links.email}>Email me</a>
+        </div>
+        <TypedTerminal />
+      </div>
+    </section>
+  );
+}
+
+function About() {
+  return (
+    <section id="about">
+      <div className="wrap">
+        <div className="eyebrow">02 · about.md</div>
+        <h2 className="section-title">About</h2>
+        <div className="about-grid">
+          <div className="about-text">
+            {PROFILE.bio.map((p, i) => <p key={i}>{p}</p>)}
+          </div>
+          <ul className="stack-list">
+            {PROFILE.stack.map((s, i) => (
+              <li key={i}><span>{s.label}</span><span>{s.value}</span></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProjectCard({ p }) {
+  return (
+    <a className="card" href={p.url} target={p.url === "#" ? undefined : "_blank"} rel="noreferrer">
+      <div className="card-top">
+        <span className="file-name">{p.name}</span>
+        <span className="ext-badge">{p.ext}</span>
+      </div>
+      <p className="desc">{p.desc}</p>
+      <div className="tag-row">
+        {p.tags.map((t, i) => <span key={i} className="tag">{t}</span>)}
+      </div>
+      <div className="card-meta">
+        <div className="diff">
+          <span className="plus">+{p.stats.plus}</span>
+          <span className="minus">-{p.stats.minus}</span>
+        </div>
+        <span>view →</span>
+      </div>
+    </a>
+  );
+}
+
+function Projects() {
+  return (
+    <section id="projects">
+      <div className="wrap">
+        <div className="eyebrow">03 · projects.json</div>
+        <h2 className="section-title">Projects</h2>
+        <div className="project-grid">
+          {PROJECTS.map((p, i) => <ProjectCard key={i} p={p} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Contact() {
+  return (
+    <section id="contact">
+      <div className="wrap">
+        <div className="contact-box">
+          <div className="eyebrow">04 · contact.txt</div>
+          <h2 className="contact-title">Let's build something.</h2>
+          <p className="contact-sub">Open to opportunities, collaborations, or just talking shop about code. Reach out any time.</p>
+          <div className="contact-links">
+            <a className="btn primary" href={PROFILE.links.email}>Send an email</a>
+            <a className="btn" href={PROFILE.links.github} target="_blank" rel="noreferrer">GitHub</a>
+            <a className="btn" href={PROFILE.links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  const [active, setActive] = useState("home");
+
+  useEffect(() => {
+    const ids = ["home", "about", "projects", "contact"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -50% 0px" }
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = (id) => {
+    setActive(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <React.Fragment>
+      <div className="bg-grid"></div>
+      <TabBar active={active} onSelect={scrollTo} />
+      <Hero />
+      <About />
+      <Projects />
+      <Contact />
+      <div className="wrap">
+        <footer>
+          <span>© {new Date().getFullYear()} {PROFILE.name}</span>
+          <span>built with react · hosted on github pages</span>
+        </footer>
+      </div>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
