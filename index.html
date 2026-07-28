@@ -188,8 +188,9 @@
     font-family: var(--mono);
     font-size: 13.5px;
     color: var(--muted);
-    display: flex;
+    display: grid;
     justify-content: space-between;
+    gap: 16px;
     border-bottom: 1px dashed var(--border);
     padding-bottom: 10px;
   }
@@ -282,18 +283,19 @@
 
 <script>
 const PROFILE = {
-  name: "Kevin Joonathan Suparman Tay",
+  name: "Kevin Jonathan Suparman Tay",
   handle: "kevinjonathanst",
   role: "Software developer.",
   bio: [
-    "I'm a developer who likes turning ideas into working software. This is where I keep the projects I'm proud of — some polished, some still rough around the edges.",
-    "Replace this paragraph with a couple of lines about your background, what you're learning, or what kind of work you're looking for."
+    "I'm a Full Stack Developer with 2 years of professional experience building web and mobile applications. I enjoy creating scalable, user-focused solutions using technologies like .NET, Laravel, Flutter, and modern JavaScript frameworks. I'm always exploring new technologies and continuously improving my skills through personal projects and real-world development.",
+    
   ],
   stack: [
-    { label: "Languages", value: "JavaScript, Python" },
-    { label: "Frontend", value: "React, HTML/CSS" },
-    { label: "Backend", value: "Node.js" },
-    { label: "Tools", value: "Git, GitHub" },
+    { label: "Languages", value: "C#, Dart, Java, PHP, JavaScript, Python" },
+    { label: "Frontend", value: "Flutter, React, HTML, CSS, Bootstrap, Tailwind CSS" },
+    { label: "Backend", value: ".NET, ASP.NET Core, Laravel, REST APIs," },
+    { label: "Database", value: "MySQL, SQL Server, Firebase Firestore" },
+    { label: "Tools", value: "Git, GitHub, Visual Studio, VS Code, Android Studio, Postman" },
   ],
   links: {
     github: "https://github.com/kevinjonathanst",
@@ -304,25 +306,25 @@ const PROFILE = {
 
 const PROJECTS = [
   {
-    name: "project-one", ext: ".js",
-    desc: "One-line description of what this project does and why you built it.",
-    tags: ["React", "API"], stats: { plus: 214, minus: 38 }, url: "#",
+    name: "Sportify", ext: ".dart",
+    desc: "Application to matchmake sports enthusiasts based on their interests and location, built with Flutter and Firebase.",
+    tags: ["Flutter", "Dart", "Firebase"], url: "https://github.com/kevinjonathanst/Sportify",
   },
-  {
-    name: "project-two", ext: ".py",
-    desc: "One-line description of what this project does and why you built it.",
-    tags: ["Python", "CLI"], stats: { plus: 156, minus: 12 }, url: "#",
-  },
-  {
-    name: "project-three", ext: ".ts",
-    desc: "One-line description of what this project does and why you built it.",
-    tags: ["TypeScript", "Node"], stats: { plus: 340, minus: 55 }, url: "#",
-  },
-  {
-    name: "project-four", ext: ".html",
-    desc: "One-line description of what this project does and why you built it.",
-    tags: ["HTML/CSS", "Design"], stats: { plus: 88, minus: 5 }, url: "#",
-  },
+  // {
+  //   name: "project-two", ext: ".py",
+  //   desc: "One-line description of what this project does and why you built it.",
+  //   tags: ["Python", "CLI"], stats: { plus: 156, minus: 12 }, url: "#",
+  // },
+  // {
+  //   name: "project-three", ext: ".ts",
+  //   desc: "One-line description of what this project does and why you built it.",
+  //   tags: ["TypeScript", "Node"], stats: { plus: 340, minus: 55 }, url: "#",
+  // },
+  // {
+  //   name: "project-four", ext: ".html",
+  //   desc: "One-line description of what this project does and why you built it.",
+  //   tags: ["HTML/CSS", "Design"], stats: { plus: 88, minus: 5 }, url: "#",
+  // },
 ];
 // ============================================================= //
 
@@ -426,10 +428,7 @@ function renderProjects() {
                 ${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}
               </div>
               <div class="card-meta">
-                <div class="diff">
-                  <span class="plus">+${p.stats.plus}</span>
-                  <span class="minus">-${p.stats.minus}</span>
-                </div>
+                
                 <span>view →</span>
               </div>
             </a>
