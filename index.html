@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>yourname.dev — portfolio</title>
+<title>Kevin Jonathan — portfolio</title>
 <meta name="description" content="Portfolio and project showcase." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,6 @@
 
   a { color: inherit; }
 
-  /* Scanline / grid background texture */
   .bg-grid {
     position: fixed;
     inset: 0;
@@ -51,7 +50,6 @@
 
   .wrap { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 0 24px; }
 
-  /* Tab bar nav */
   .tabbar {
     position: sticky; top: 0; z-index: 20;
     background: rgba(10,14,20,0.85);
@@ -100,7 +98,6 @@
   }
   .eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--accent); opacity: 0.5; }
 
-  /* HERO */
   .hero { padding-top: 72px; }
   .terminal {
     background: var(--surface);
@@ -159,7 +156,7 @@
   }
   .hero-role .hl { color: var(--accent); }
 
-  .btn-row { display:flex; gap: 12px; flex-wrap: wrap; }
+  .btn-row { display:flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
   .btn {
     font-family: var(--mono);
     font-size: 13px;
@@ -178,7 +175,6 @@
   .btn.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .btn.primary:hover { background: var(--accent); color: #0a0e14; }
 
-  /* ABOUT */
   h2.section-title {
     font-family: var(--mono);
     font-size: 26px;
@@ -199,7 +195,6 @@
   }
   .stack-list li span:last-child { color: var(--accent-2); }
 
-  /* PROJECTS */
   .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .card {
     background: var(--surface);
@@ -240,7 +235,6 @@
     border-radius: 4px; padding: 2px 7px;
   }
 
-  /* CONTACT */
   .contact-box {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -282,22 +276,15 @@
 </style>
 </head>
 <body>
+<div class="bg-grid"></div>
+
 <div id="root"></div>
 
-<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-<script type="text/babel" data-presets="react">
-const { useState, useEffect, useRef } = React;
-
-// ---------------------------------------------------------------
-// EDIT THIS DATA to customize the site — name, bio, projects, links
-// ---------------------------------------------------------------
+<script>
 const PROFILE = {
-  name: "Your Name",
-  handle: "yourhandle",
-  role: "Software developer building things for the web.",
+  name: "Kevin Joonathan Suparman Tay",
+  handle: "kevinjonathanst",
+  role: "Software developer.",
   bio: [
     "I'm a developer who likes turning ideas into working software. This is where I keep the projects I'm proud of — some polished, some still rough around the edges.",
     "Replace this paragraph with a couple of lines about your background, what you're learning, or what kind of work you're looking for."
@@ -309,249 +296,234 @@ const PROFILE = {
     { label: "Tools", value: "Git, GitHub" },
   ],
   links: {
-    github: "https://github.com/yourhandle",
-    linkedin: "https://linkedin.com/in/yourhandle",
-    email: "mailto:you@example.com",
+    github: "https://github.com/kevinjonathanst",
+    linkedin: "https://www.linkedin.com/in/kevin-j-28a26718b/",
+    email: "mailto:kevinjonathanst@gmail.com",
   }
 };
 
 const PROJECTS = [
   {
-    name: "project-one",
-    ext: ".js",
+    name: "project-one", ext: ".js",
     desc: "One-line description of what this project does and why you built it.",
-    tags: ["React", "API"],
-    stats: { plus: 214, minus: 38 },
-    url: "#",
+    tags: ["React", "API"], stats: { plus: 214, minus: 38 }, url: "#",
   },
   {
-    name: "project-two",
-    ext: ".py",
+    name: "project-two", ext: ".py",
     desc: "One-line description of what this project does and why you built it.",
-    tags: ["Python", "CLI"],
-    stats: { plus: 156, minus: 12 },
-    url: "#",
+    tags: ["Python", "CLI"], stats: { plus: 156, minus: 12 }, url: "#",
   },
   {
-    name: "project-three",
-    ext: ".ts",
+    name: "project-three", ext: ".ts",
     desc: "One-line description of what this project does and why you built it.",
-    tags: ["TypeScript", "Node"],
-    stats: { plus: 340, minus: 55 },
-    url: "#",
+    tags: ["TypeScript", "Node"], stats: { plus: 340, minus: 55 }, url: "#",
   },
   {
-    name: "project-four",
-    ext: ".html",
+    name: "project-four", ext: ".html",
     desc: "One-line description of what this project does and why you built it.",
-    tags: ["HTML/CSS", "Design"],
-    stats: { plus: 88, minus: 5 },
-    url: "#",
+    tags: ["HTML/CSS", "Design"], stats: { plus: 88, minus: 5 }, url: "#",
   },
 ];
-// ---------------------------------------------------------------
+// ============================================================= //
 
-function TabBar({ active, onSelect }) {
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function renderTabBar() {
   const tabs = [
     { id: "home", label: "home", ext: ".sh" },
     { id: "about", label: "about", ext: ".md" },
     { id: "projects", label: "projects", ext: ".json" },
     { id: "contact", label: "contact", ext: ".txt" },
   ];
-  return (
-    <div className="tabbar">
-      <div className="tabbar-inner">
-        <div className="tabbar-dots">
-          <span className="dot red"></span>
-          <span className="dot yellow"></span>
-          <span className="dot green"></span>
+  return `
+    <div class="tabbar">
+      <div class="tabbar-inner">
+        <div class="tabbar-dots">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
         </div>
-        {tabs.map(t => (
-          <button
-            key={t.id}
-            className={"tab" + (active === t.id ? " active" : "")}
-            onClick={() => onSelect(t.id)}
-          >
-            {t.label}<span className="ext">{t.ext}</span>
-            <span className="dirty" style={{ opacity: active === t.id ? 1 : 0 }}></span>
+        ${tabs.map(t => `
+          <button class="tab" data-tab="${t.id}">
+            ${t.label}<span class="ext">${t.ext}</span>
+            <span class="dirty"></span>
           </button>
-        ))}
+        `).join('')}
       </div>
     </div>
-  );
+  `;
 }
 
-function TypedTerminal() {
-  const fullText = `whoami\n> ${PROFILE.name} — ${PROFILE.role}`;
-  const [shown, setShown] = useState("");
-  const idx = useRef(0);
-
-  useEffect(() => {
-    const iv = setInterval(() => {
-      idx.current += 1;
-      setShown(fullText.slice(0, idx.current));
-      if (idx.current >= fullText.length) clearInterval(iv);
-    }, 22);
-    return () => clearInterval(iv);
-  }, []);
-
-  const lines = shown.split("\n");
-  return (
-    <div className="terminal">
-      <div className="terminal-head">
-        <span className="dot red" style={{background:'#e06050'}}></span>
-        <span className="dot yellow" style={{background:'#e5c07b'}}></span>
-        <span className="dot green" style={{background:'#7dd3c0'}}></span>
-        <span className="path">~/portfolio — zsh</span>
-      </div>
-      <div className="terminal-body">
-        <div className="prompt-line"><span className="prompt-sym">➜ </span>{lines[0]}<span className="cursor"></span></div>
-        {lines[1] && <div className="type-out" style={{marginTop: 10}}>{lines[1]}</div>}
-      </div>
-    </div>
-  );
-}
-
-function Hero() {
-  return (
-    <section id="home" className="hero">
-      <div className="wrap">
-        <div className="eyebrow">01 · currently building</div>
-        <h1 className="hero-name">{PROFILE.name}<span className="dim">.dev</span></h1>
-        <p className="hero-role">
-          <span className="hl">@{PROFILE.handle}</span> — {PROFILE.role} Below is a running log of things I've shipped, broken, and fixed again.
+function renderHero() {
+  return `
+    <section id="home" class="hero">
+      <div class="wrap">
+        <div class="eyebrow">01 · currently building</div>
+        <h1 class="hero-name">${esc(PROFILE.name)}<span class="dim">.dev</span></h1>
+        <p class="hero-role">
+          <span class="hl">@${esc(PROFILE.handle)}</span> — ${esc(PROFILE.role)} Below is a running log of things I've shipped, broken, and fixed again.
         </p>
-        <div className="btn-row" style={{marginBottom: 32}}>
-          <a className="btn primary" href="#projects">View projects →</a>
-          <a className="btn" href={PROFILE.links.github} target="_blank" rel="noreferrer">GitHub</a>
-          <a className="btn" href={PROFILE.links.email}>Email me</a>
+        <div class="btn-row">
+          <a class="btn primary" href="#projects">View projects →</a>
+          <a class="btn" href="${PROFILE.links.github}" target="_blank" rel="noreferrer">GitHub</a>
+          <a class="btn" href="${PROFILE.links.email}">Email me</a>
         </div>
-        <TypedTerminal />
+        <div class="terminal">
+          <div class="terminal-head">
+            <span class="dot red" style="background:#e06050"></span>
+            <span class="dot yellow" style="background:#e5c07b"></span>
+            <span class="dot green" style="background:#7dd3c0"></span>
+            <span class="path">~/portfolio — zsh</span>
+          </div>
+          <div class="terminal-body">
+            <div class="prompt-line"><span class="prompt-sym">➜ </span><span id="typed-cmd"></span><span class="cursor" id="cmd-cursor"></span></div>
+            <div class="type-out" id="typed-out" style="margin-top:10px;"></div>
+          </div>
+        </div>
       </div>
     </section>
-  );
+  `;
 }
 
-function About() {
-  return (
+function renderAbout() {
+  return `
     <section id="about">
-      <div className="wrap">
-        <div className="eyebrow">02 · about.md</div>
-        <h2 className="section-title">About</h2>
-        <div className="about-grid">
-          <div className="about-text">
-            {PROFILE.bio.map((p, i) => <p key={i}>{p}</p>)}
+      <div class="wrap">
+        <div class="eyebrow">02 · about.md</div>
+        <h2 class="section-title">About</h2>
+        <div class="about-grid">
+          <div class="about-text">
+            ${PROFILE.bio.map(p => `<p>${esc(p)}</p>`).join('')}
           </div>
-          <ul className="stack-list">
-            {PROFILE.stack.map((s, i) => (
-              <li key={i}><span>{s.label}</span><span>{s.value}</span></li>
-            ))}
+          <ul class="stack-list">
+            ${PROFILE.stack.map(s => `<li><span>${esc(s.label)}</span><span>${esc(s.value)}</span></li>`).join('')}
           </ul>
         </div>
       </div>
     </section>
-  );
+  `;
 }
 
-function ProjectCard({ p }) {
-  return (
-    <a className="card" href={p.url} target={p.url === "#" ? undefined : "_blank"} rel="noreferrer">
-      <div className="card-top">
-        <span className="file-name">{p.name}</span>
-        <span className="ext-badge">{p.ext}</span>
-      </div>
-      <p className="desc">{p.desc}</p>
-      <div className="tag-row">
-        {p.tags.map((t, i) => <span key={i} className="tag">{t}</span>)}
-      </div>
-      <div className="card-meta">
-        <div className="diff">
-          <span className="plus">+{p.stats.plus}</span>
-          <span className="minus">-{p.stats.minus}</span>
-        </div>
-        <span>view →</span>
-      </div>
-    </a>
-  );
-}
-
-function Projects() {
-  return (
+function renderProjects() {
+  return `
     <section id="projects">
-      <div className="wrap">
-        <div className="eyebrow">03 · projects.json</div>
-        <h2 className="section-title">Projects</h2>
-        <div className="project-grid">
-          {PROJECTS.map((p, i) => <ProjectCard key={i} p={p} />)}
+      <div class="wrap">
+        <div class="eyebrow">03 · projects.json</div>
+        <h2 class="section-title">Projects</h2>
+        <div class="project-grid">
+          ${PROJECTS.map(p => `
+            <a class="card" href="${p.url}" ${p.url !== '#' ? 'target="_blank" rel="noreferrer"' : ''}>
+              <div class="card-top">
+                <span class="file-name">${esc(p.name)}</span>
+                <span class="ext-badge">${esc(p.ext)}</span>
+              </div>
+              <p class="desc">${esc(p.desc)}</p>
+              <div class="tag-row">
+                ${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}
+              </div>
+              <div class="card-meta">
+                <div class="diff">
+                  <span class="plus">+${p.stats.plus}</span>
+                  <span class="minus">-${p.stats.minus}</span>
+                </div>
+                <span>view →</span>
+              </div>
+            </a>
+          `).join('')}
         </div>
       </div>
     </section>
-  );
+  `;
 }
 
-function Contact() {
-  return (
+function renderContact() {
+  return `
     <section id="contact">
-      <div className="wrap">
-        <div className="contact-box">
-          <div className="eyebrow">04 · contact.txt</div>
-          <h2 className="contact-title">Let's build something.</h2>
-          <p className="contact-sub">Open to opportunities, collaborations, or just talking shop about code. Reach out any time.</p>
-          <div className="contact-links">
-            <a className="btn primary" href={PROFILE.links.email}>Send an email</a>
-            <a className="btn" href={PROFILE.links.github} target="_blank" rel="noreferrer">GitHub</a>
-            <a className="btn" href={PROFILE.links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+      <div class="wrap">
+        <div class="contact-box">
+          <div class="eyebrow">04 · contact.txt</div>
+          <h2 class="contact-title">Let's build something.</h2>
+          <p class="contact-sub">Open to opportunities, collaborations, or just talking shop about code. Reach out any time.</p>
+          <div class="contact-links">
+            <a class="btn primary" href="${PROFILE.links.email}">Send an email</a>
+            <a class="btn" href="${PROFILE.links.github}" target="_blank" rel="noreferrer">GitHub</a>
+            <a class="btn" href="${PROFILE.links.linkedin}" target="_blank" rel="noreferrer">LinkedIn</a>
           </div>
         </div>
       </div>
     </section>
-  );
+  `;
 }
 
-function App() {
-  const [active, setActive] = useState("home");
+function renderFooter() {
+  return `
+    <div class="wrap">
+      <footer>
+        <span>© ${new Date().getFullYear()} ${esc(PROFILE.name)}</span>
+        <span>built with vanilla js · hosted on github pages</span>
+      </footer>
+    </div>
+  `;
+}
 
-  useEffect(() => {
-    const ids = ["home", "about", "projects", "contact"];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id);
-        });
-      },
-      { rootMargin: "-40% 0px -50% 0px" }
-    );
-    ids.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
+function mount() {
+  const root = document.getElementById('root');
+  root.innerHTML =
+    renderTabBar() +
+    renderHero() +
+    renderAbout() +
+    renderProjects() +
+    renderContact() +
+    renderFooter();
+
+  // typing effect
+  const fullText = `whoami\n> ${PROFILE.name} — ${PROFILE.role}`;
+  const [cmdLine, outLine] = fullText.split('\n');
+  const cmdEl = document.getElementById('typed-cmd');
+  const outEl = document.getElementById('typed-out');
+  let i = 0;
+  const full = cmdLine + '\n' + outLine;
+  const iv = setInterval(() => {
+    i++;
+    const slice = full.slice(0, i);
+    const parts = slice.split('\n');
+    cmdEl.textContent = parts[0] || '';
+    outEl.textContent = parts[1] || '';
+    if (i >= full.length) clearInterval(iv);
+  }, 22);
+
+  // tab bar click-to-scroll + active state
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  const sections = ['home', 'about', 'projects', 'contact'].map(id => document.getElementById(id));
+
+  function setActive(id) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const id = tab.dataset.tab;
+      setActive(id);
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     });
-    return () => observer.disconnect();
-  }, []);
+  });
 
-  const scrollTo = (id) => {
-    setActive(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
+  setActive('home');
 
-  return (
-    <React.Fragment>
-      <div className="bg-grid"></div>
-      <TabBar active={active} onSelect={scrollTo} />
-      <Hero />
-      <About />
-      <Projects />
-      <Contact />
-      <div className="wrap">
-        <footer>
-          <span>© {new Date().getFullYear()} {PROFILE.name}</span>
-          <span>built with react · hosted on github pages</span>
-        </footer>
-      </div>
-    </React.Fragment>
-  );
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) setActive(e.target.id);
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+
+  sections.forEach(el => el && observer.observe(el));
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+document.addEventListener('DOMContentLoaded', mount);
 </script>
 </body>
 </html>
