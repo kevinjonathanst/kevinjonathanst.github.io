@@ -306,20 +306,30 @@ const PROFILE = {
 
 const PROJECTS = [
   {
-    name: "Sportify", ext: ".dart",
+    name: "Sportify", 
+    ext: ".dart",
     desc: "Application to matchmake sports enthusiasts based on their interests and location, built with Flutter and Firebase.",
-    tags: ["Flutter", "Dart", "Firebase"], url: "https://github.com/kevinjonathanst/Sportify",
+    tags: ["Flutter", "Dart", "Firebase"], \
+    url: "https://github.com/kevinjonathanst/Sportify",
   },
-  // {
-  //   name: "project-two", ext: ".py",
-  //   desc: "One-line description of what this project does and why you built it.",
-  //   tags: ["Python", "CLI"], stats: { plus: 156, minus: 12 }, url: "#",
-  // },
-  // {
-  //   name: "project-three", ext: ".ts",
-  //   desc: "One-line description of what this project does and why you built it.",
-  //   tags: ["TypeScript", "Node"], stats: { plus: 340, minus: 55 }, url: "#",
-  // },
+  {
+    name: "Twoflo POS",
+    ext: ".jsx",
+    desc: "A point-of-sale system with table-based ordering, ingredient inventory, recipe costing, and sales management.",
+    tags: ["React", "JavaScript", "Tailwind CSS", "Supabase", "PostgreSQL"],
+  },
+  {
+    name: "Anekaban",
+    ext: ".html",
+    desc: "A bilingual automotive business website featuring a tire catalog, service information, and an enquiry form.",
+    tags: ["HTML", "CSS", "JavaScript"],
+  },
+  {
+    name: "Preorder",
+    ext: ".tsx",
+    desc: "A pre-order management app with an admin dashboard, multi-item orders, and dedicated order-tracking pages.",
+    tags: ["React", "Next.js", "TypeScript", "Supabase", "PostgreSQL"],
+  },
   // {
   //   name: "project-four", ext: ".html",
   //   desc: "One-line description of what this project does and why you built it.",
@@ -364,7 +374,7 @@ function renderHero() {
   return `
     <section id="home" class="hero">
       <div class="wrap">
-        <div class="eyebrow">01 · currently building</div>
+        <div class="eyebrow">01 · home</div>
         <h1 class="hero-name">${esc(PROFILE.name)}<span class="dim">.dev</span></h1>
         <p class="hero-role">
           <span class="hl">@${esc(PROFILE.handle)}</span> — ${esc(PROFILE.role)} Below is a running log of things I've shipped, broken, and fixed again.
